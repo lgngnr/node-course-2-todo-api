@@ -2,7 +2,7 @@ const express = require('express')
 // convert json to object
 const bodyParser = require('body-parser')
 
-var { mongoose } = require('../db/mongoose')
+var { mongoose } = require('./db/mongoose')
 var { Todo } = require('./models/Todo')
 var { User } = require('./models/User')
 
