@@ -8,11 +8,13 @@ var { User } = require('./models/User')
 
 const app = express()
 
+const port = process.env.PORT || 3000
+
 // give bodyparser middleware to express
 app.use(bodyParser.json())
 
-app.listen(3000, () => {
-    console.log('started on port 3000')
+app.listen(port, () => {
+    console.log(`started on port ${port}`)
 })
 
 app.post('/todos', (req, res) => {
