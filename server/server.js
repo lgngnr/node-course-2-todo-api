@@ -58,6 +58,19 @@ app.get('/todos/:id', (req, res) => {
     })
 })
 
+app.delete('/todos/:id', (req, res) => {
+    console.log(req.params.id)
+    if (!ObjectID.isValid(req.params.id))
+        return res.status(400).send({res: "invalid"})
+    Todo.findByIdAndRemove(req.params.id).then((doc) => {
+        if (!doc)
+            res.status(404).send({})
+        else res.send(docs)
+    }).catch((e) => {
+        res.status(400).send({})
+    })
+})
+
 /* var newTodo = new Todo({
     text: 'Feed the cat',
     completed: true,
