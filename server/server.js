@@ -1,7 +1,7 @@
 const express = require('express')
 // convert json to object
 const bodyParser = require('body-parser')
-
+const { ObjectID } = require('mongodb')
 var { mongoose } = require('./db/mongoose')
 var { Todo } = require('./models/Todo')
 var { User } = require('./models/User')
@@ -33,6 +33,26 @@ app.get('/todos', (req, res) => {
         res.send({ todos })
     }, (e) => {
         res.status(400).send(e)
+    })
+})
+
+app.get('/todos/:id', (req, res) => {
+    var id = req.params.id
+    console.log('requested id', id)
+    
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send({})
+    } 
+        
+    Todo.findById(id).then((todo) => {
+        console.log('todo',todo)
+        if (todo)
+            res.send(todo)
+        else
+            res.status(404).send({})
+    }).catch((e) => {
+        console.log(e)
+        res.status(400).send({})
     })
 })
 
