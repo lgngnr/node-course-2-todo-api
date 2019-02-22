@@ -1,10 +1,12 @@
 const express = require('express')
 // convert json to object
 const bodyParser = require('body-parser')
+const _ = require('lodash')
 const { ObjectID } = require('mongodb')
-var { mongoose } = require('./db/mongoose')
-var { Todo } = require('./models/Todo')
-var { User } = require('./models/User')
+
+const { mongoose } = require('./db/mongoose')
+const { Todo } = require('./models/Todo')
+const { User } = require('./models/User')
 
 const app = express()
 
@@ -68,6 +70,31 @@ app.delete('/todos/:id', (req, res) => {
         }
     }).catch((e) => {
         res.status(400).send({})
+    })
+})
+
+// update todo items
+app.patch('/todos/:id', (req, res) => {
+    var id = req.params.id
+    var body = _.pick(req.body, ['text', 'completed'])
+
+    if (!ObjectID.isValid(id))
+        return res.status(404).send({ res: "invalid" })
+    
+    console.log(body.completed)
+    if (_.isBoolean(body.completed)) {
+        body.completedAt = new Date().getTime()
+    } else {
+        body.completed = false
+        body.completedAt = null
+    }
+
+    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+        if (!todo)
+            return res.status(404).send()
+        res.send({todo})
+    }).catch((e) => {
+        res.status(400).send()
     })
 })
 
