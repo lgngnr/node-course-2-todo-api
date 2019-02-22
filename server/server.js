@@ -18,7 +18,6 @@ app.listen(port, () => {
 })
 
 app.post('/todos', (req, res) => {
-    console.log(req.body)
     var todo = new Todo({
         text: req.body.text
     })
@@ -26,7 +25,7 @@ app.post('/todos', (req, res) => {
         res.send(doc)
     }, (e) => {
         res.status(400).send(e)
-        console.log('Unable to save todo', e)
+        //console.log('Unable to save todo', e)
     })
 })
 
@@ -40,32 +39,33 @@ app.get('/todos', (req, res) => {
 
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id
-    console.log('requested id', id)
+    //console.log('requested id', id)
     
     if (!ObjectID.isValid(id)) {
         return res.status(404).send({})
     } 
         
     Todo.findById(id).then((todo) => {
-        console.log('todo',todo)
+        //console.log('todo',todo)
         if (todo)
             res.send(todo)
         else
             res.status(404).send({})
     }).catch((e) => {
-        console.log(e)
+        //console.log(e)
         res.status(400).send({})
     })
 })
 
 app.delete('/todos/:id', (req, res) => {
-    console.log(req.params.id)
     if (!ObjectID.isValid(req.params.id))
-        return res.status(400).send({res: "invalid"})
-    Todo.findByIdAndRemove(req.params.id).then((doc) => {
-        if (!doc)
+        return res.status(404).send({res: "invalid"})
+    Todo.findByIdAndRemove(req.params.id).then((todo) => {
+        if (!todo) {
             res.status(404).send({})
-        else res.send(docs)
+        } else {
+            res.send({ todo })
+        }
     }).catch((e) => {
         res.status(400).send({})
     })
