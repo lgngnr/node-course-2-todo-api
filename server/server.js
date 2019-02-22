@@ -1,3 +1,5 @@
+const env = require('./config/config')
+
 const express = require('express')
 // convert json to object
 const bodyParser = require('body-parser')
@@ -10,7 +12,7 @@ const { User } = require('./models/User')
 
 const app = express()
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT
 
 // give bodyparser middleware to express
 app.use(bodyParser.json())
