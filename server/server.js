@@ -99,26 +99,20 @@ app.patch('/todos/:id', (req, res) => {
     })
 })
 
-/* var newTodo = new Todo({
-    text: 'Feed the cat',
-    completed: true,
-    completedAt: new Date().getTime()
-}) */
+app.post('/users', (req, res) => {
+    var userFields = _.pick(req.body, ['email', 'password'])
 
-/* newTodo.save().then((doc) => {
-    console.log("Saved todo", doc)
-}, (e) => {
-    console.log('Unable to save todo', e)
-    }) */
+    var user = new User(userFields)
 
-var user = new User({
-    email: 'test@email.com'
+    user.save()
+        .then(() => {
+            return user.generateAuthToken();
+        }).then((token) => {
+            res.header('x-auth', token).send(user)
+        }).catch((e) => {
+            res.status(400).send(e)
+            console.log('Unable to save todo', e)
+        })
 })
-
-/* user.save().then((res) => {
-    console.log('New User saved', res)
-}, (e) => {
-    console.log('Unable to save new user', e)
-}) */
 
 module.exports = {app}
