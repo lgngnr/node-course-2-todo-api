@@ -9,6 +9,7 @@ const { ObjectID } = require('mongodb')
 const { mongoose } = require('./db/mongoose')
 const { Todo } = require('./models/Todo')
 const { User } = require('./models/User')
+var { authenticate } = require('./middleware/authenticate')
 
 const app = express()
 
@@ -44,11 +45,11 @@ app.get('/todos', (req, res) => {
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id
     //console.log('requested id', id)
-    
+
     if (!ObjectID.isValid(id)) {
         return res.status(404).send({})
-    } 
-        
+    }
+
     Todo.findById(id).then((todo) => {
         //console.log('todo',todo)
         if (todo)
@@ -63,7 +64,7 @@ app.get('/todos/:id', (req, res) => {
 
 app.delete('/todos/:id', (req, res) => {
     if (!ObjectID.isValid(req.params.id))
-        return res.status(404).send({res: "invalid"})
+        return res.status(404).send({ res: "invalid" })
     Todo.findByIdAndRemove(req.params.id).then((todo) => {
         if (!todo) {
             res.status(404).send({})
@@ -82,7 +83,7 @@ app.patch('/todos/:id', (req, res) => {
 
     if (!ObjectID.isValid(id))
         return res.status(404).send({ res: "invalid" })
-    
+
     if (_.isBoolean(body.completed) && body.completed) {
         body.completedAt = new Date().getTime()
     } else {
@@ -90,10 +91,10 @@ app.patch('/todos/:id', (req, res) => {
         body.completedAt = null
     }
 
-    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    Todo.findByIdAndUpdate(id, { $set: body }, { new: true }).then((todo) => {
         if (!todo)
             return res.status(404).send()
-        res.send({todo})
+        res.send({ todo })
     }).catch((e) => {
         res.status(400).send()
     })
@@ -115,4 +116,10 @@ app.post('/users', (req, res) => {
         })
 })
 
-module.exports = {app}
+
+
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user)
+})
+
+module.exports = { app }
