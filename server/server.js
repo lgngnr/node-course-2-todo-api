@@ -112,7 +112,6 @@ app.post('/users', (req, res) => {
             res.header('x-auth', token).send(user)
         }).catch((e) => {
             res.status(400).send(e)
-            console.log('Unable to save todo', e)
         })
 })
 
