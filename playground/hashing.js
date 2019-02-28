@@ -12,9 +12,9 @@ var password = '123abc!'
     bcrypt.hash(password, salt, (err, hash) => {
         console.log(hash)
     })
-}) */
+}) */ 
 
-var hashedPassword = '$2a$10$EC3mHQAz7VObcoGuFt/7wuVKKG816CGwxULMfFrP84UFHFXP/IJtK'
+var hashedPassword = '$2a$10$EC3mHQAz7VObcoGuFt/7wuVKKG816CGwxULMfFrP84UFHFXP/IJtK';
 
 bcrypt.compare(password, hashedPassword, (err, res) => {
     console.log(res)
